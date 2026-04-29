@@ -11,15 +11,19 @@ def webhook_verify():
 
 @app.route('/webhook', methods=['POST'])
 def webhook_receive():
+    print(">>> WEBHOOK POST RECEIVED")
     data = request.get_json()
+    print(f">>> DATA: {data}")
     if data.get('object') == 'page':
         for entry in data.get('entry', []):
             for messaging in entry.get('messaging', []):
                 sender_id = messaging['sender']['id']
                 message = messaging.get('message', {})
                 text = message.get('text', '')
+                print(f">>> TEXT: {text}")
                 if text:
                     reply = get_persona_response(text)
+                    print(f">>> REPLY: {reply}")
                     send_message(sender_id, reply)
     return jsonify({'status': 'ok'})
 
